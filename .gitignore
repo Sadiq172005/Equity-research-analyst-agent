@@ -1,0 +1,17 @@
+.env
+__pycache__/
+.ipynb_checkpoints/
+data/faiss_index/
+*.egg-info/
+.venv/
+
+.env
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+*.zip
+*.log
+storage/
+faiss_index/
+*.faiss
+*.pkl
