@@ -1,0 +1,44 @@
+{
+  "01_clean_grower_uptrend.pdf": {
+    "expected_verdict": "BUY",
+    "expected_flags": "Grower + Uptrend + clean macro, all agents agree",
+    "macro_text": "Markets steady, no major catalysts this week.",
+    "ticker": "CLEAN_GROW"
+  },
+  "02_margin_decline_straggler.pdf": {
+    "expected_verdict": "AVOID",
+    "expected_flags": "Straggler + Downtrend, all agents agree bearish",
+    "macro_text": "Markets steady, no major catalysts this week.",
+    "ticker": "MARGIN_DEC"
+  },
+  "03_high_leverage_payer.pdf": {
+    "expected_verdict": "HOLD",
+    "expected_flags": "Payer but HIGH_LEVERAGE warning blocks a clean BUY",
+    "macro_text": "Markets steady, no major catalysts this week.",
+    "ticker": "HIGH_LEVER"
+  },
+  "04_fundamentals_vs_technical_conflict.pdf": {
+    "expected_verdict": "REVIEW_REQUIRED",
+    "expected_flags": "Grower fundamentals (Bullish) vs Downtrend technical (Bearish) — conflict",
+    "macro_text": "Markets steady, no major catalysts this week.",
+    "ticker": "FUNDAMENTA"
+  },
+  "05_fundamentals_vs_macro_conflict.pdf": {
+    "expected_verdict": "REVIEW_REQUIRED",
+    "expected_flags": "Grower + Uptrend (Bullish) vs Risk-Off macro (Bearish) — conflict",
+    "macro_text": "US 10-year yield spiking on inflation fears, crude oil surging on geopolitical sanctions and war risk, recession warnings from multiple desks, rate hike expectations rising.",
+    "ticker": "FUNDAMENTA"
+  },
+  "06_missing_financials.pdf": {
+    "expected_verdict": "REVIEW_REQUIRED",
+    "expected_flags": "FUNDAMENTALS_DATA_INCOMPLETE — extraction found no revenue/profit",
+    "macro_text": "Markets steady, no major catalysts this week.",
+    "ticker": "MISSING_FI"
+  },
+  "07_scanned_clean.png": {
+    "expected_verdict": "BUY",
+    "expected_flags": "OCR path test (same as 01)",
+    "macro_text": "Markets steady, no major catalysts this week.",
+    "ticker": "ZENITH"
+  }
+}
