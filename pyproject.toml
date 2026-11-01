@@ -19,7 +19,7 @@ dependencies = [
   "langgraph>=0.2",
   "faiss-cpu>=1.8",
   "scikit-learn>=1.3",
-  # document parsing / OCR (system: tesseract-ocr + poppler-utils bhi chahiye)
+  # document parsing / OCR (system packages tesseract-ocr + poppler-utils are also required)
   "pypdf>=4.0",
   "pdfplumber>=0.11",
   "pdf2image>=1.17",

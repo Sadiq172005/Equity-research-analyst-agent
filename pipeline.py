@@ -83,7 +83,7 @@ def ocr_document(path: str) -> str:
                 text = "\n".join((pg.extract_text() or "") for pg in pdf.pages)
         except Exception:
             pass
-        if len(text.strip()) > 40:          # digital PDF — OCR ki zaroorat nahi
+        if len(text.strip()) > 40:          # digital PDF — no OCR needed
             return text
         from pdf2image import convert_from_path
         import pytesseract
@@ -379,7 +379,7 @@ def report_generator(s: State) -> State:
         rep = json.loads(txt)
     except json.JSONDecodeError:
         rep = {"verdict": "HOLD", "summary": txt[:400], "key_risks": [], "action_items": [], "investor_note": None}
-    # Hard guard: koi warning/error flag ho to LLM "BUY" nahi keh sakta
+    # Hard guard: if any warning/error flag is present, the LLM cannot say "BUY"
     if any(f["severity"] in ("error", "warning") for f in s.get("flags", [])) and rep.get("verdict") == "BUY":
         rep["verdict"] = "HOLD"
     return {"report": rep}
