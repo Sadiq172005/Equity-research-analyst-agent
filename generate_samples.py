@@ -1,5 +1,5 @@
-"""Sample annual-report-style PDFs (+ one scanned PNG) — har ek mein alag research scenario.
-Price series PDF mein nahi hota (market data se aata hai), isliye alag se prices.json mein.
+"""Sample annual-report-style PDFs (+ one scanned PNG) — each one a different research scenario.
+Price series isn't part of the PDF (it comes from market data separately), so it's kept in prices.json.
 Run: python generate_samples.py  ->  samples/*.pdf + samples/prices.json + samples/expected.json
 """
 import json

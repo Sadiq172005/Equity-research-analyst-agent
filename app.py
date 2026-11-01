@@ -57,7 +57,7 @@ def analyze(
 
 @app.post("/analyze-batch")
 def analyze_batch_ep(items: List[BatchItem] = Body(...)):
-    """Ek watchlist ke saare tickers ek saath — PDFs nahi, sirf price series + macro/concall text (daily run)."""
+    """All tickers in a watchlist at once — no PDFs, just price series + macro/concall text (for a daily run)."""
     results = analyze_batch([i.model_dump() for i in items])
     summary = {}
     for r in results:

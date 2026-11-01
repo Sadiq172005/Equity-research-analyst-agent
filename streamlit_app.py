@@ -1,5 +1,5 @@
 """Streamlit UI — run: streamlit run streamlit_app.py
-Default: pipeline direct import. Sidebar mein API URL do to deployed FastAPI (AWS) use karega."""
+Default: direct pipeline import. Enter an API URL in the sidebar to use the deployed FastAPI (AWS) service instead."""
 import os, json, tempfile
 from pathlib import Path
 import pandas as pd
@@ -13,12 +13,12 @@ SEV_ICON = {"error": "\U0001F534 error", "warning": "\U0001F7E0 warning", "info"
 
 with st.sidebar:
     st.title("\U0001F4C8 Equity Research Copilot")
-    api_url = st.text_input("API URL (optional)", placeholder="http://<app-runner-url>", help="Khaali = local pipeline use hoga")
+    api_url = st.text_input("API URL (optional)", placeholder="http://<app-runner-url>", help="Leave blank to use the local pipeline")
     if not api_url and not os.getenv("OPENAI_API_KEY"):
         key = st.text_input("OPENAI_API_KEY", type="password")
         if key:
             os.environ["OPENAI_API_KEY"] = key
-    st.caption("Sample annual reports `samples/` folder mein hain (python generate_samples.py).")
+    st.caption("Sample annual reports are in the `samples/` folder (python generate_samples.py).")
 
 
 def run_analyze(name: str, data: bytes | None, ticker: str, query: str, prices: list, macro_text: str, concall_text: str) -> dict:
@@ -56,7 +56,7 @@ def render(res: dict):
         st.dataframe(pd.DataFrame([{"Severity": SEV_ICON[f["severity"]], "Code": f["code"], "Message": f["message"],
                                     "Note": f.get("note") or ""} for f in flags]), width="stretch", hide_index=True)
     else:
-        st.success("Deterministic checks mein koi flag nahi mila.")
+        st.success("No flags found by the deterministic checks.")
     if rep.get("key_risks"):
         st.subheader("Key risks")
         for r in rep["key_risks"]:
@@ -105,7 +105,7 @@ with tab1:
             st.error(f"Failed: {e}")
 
 with tab2:
-    st.caption("Watchlist ke multiple tickers ek saath — PDFs nahi, sirf price series + macro text (daily run).")
+    st.caption("Multiple tickers from a watchlist at once — no PDFs, just price series + macro text (daily run).")
     n = st.number_input("Kitne tickers?", min_value=1, max_value=10, value=2)
     items = []
     for i in range(int(n)):
@@ -136,7 +136,7 @@ with tab2:
                 render(r)
 
 with tab3:
-    q = st.text_input("Macro/sector ka sawaal", placeholder="US yield rise se IT sector par kya asar hota hai?")
+    q = st.text_input("Macro/sector question", placeholder="How does a rising US yield affect the IT sector?")
     if st.button("Ask") and q:
         with st.spinner("Searching macro/sector knowledge base..."):
             try:
@@ -149,4 +149,4 @@ with tab3:
                 st.markdown(out["answer"])
                 st.caption("Sources: " + ", ".join(f"{s['source']} (p{s['page']})" for s in out["sources"]))
             except Exception as e:
-                st.error(f"Failed: {e} — data/macro_docs/ mein docs daale hain?")
+                st.error(f"Failed: {e} — have you added docs to data/macro_docs/?")

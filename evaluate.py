@@ -1,5 +1,6 @@
-"""Samples pe end-to-end eval: expected.json ke verdict se compare. Needs OPENAI_API_KEY for the LLM-routed
-scenarios (report_generator); error/conflict-routed scenarios (flag_for_review) don't need the LLM at all.
+"""End-to-end evaluation over the samples: compares each result's verdict against expected.json.
+Needs OPENAI_API_KEY for the LLM-routed scenarios (report_generator); error/conflict-routed scenarios
+(flag_for_review) don't need the LLM at all.
 Run: python evaluate.py"""
 import json, sys
 from pathlib import Path

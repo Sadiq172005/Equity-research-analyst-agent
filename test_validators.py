@@ -1,4 +1,4 @@
-"""Offline tests — LLM/API key ke bina chalte hain: python test_validators.py
+"""Offline tests — run without any LLM/API key: python test_validators.py
 Covers the deterministic signal engines only (classify_fundamentals, compute_technical, macro_risk_scan) —
 the same functions the multi-agent graph's fundamental/technical/macro nodes call."""
 from pipeline import FinancialMetrics, classify_fundamentals, compute_technical, macro_risk_scan

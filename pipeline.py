@@ -15,7 +15,7 @@ LLM_MODEL = os.getenv("LLM_MODEL", "gpt-4o-mini")
 EMBED_MODEL = os.getenv("EMBED_MODEL", "text-embedding-3-small")
 DOCS_DIR = Path(os.getenv("MACRO_DOCS_DIR", "data/macro_docs"))
 INDEX_DIR = Path(os.getenv("INDEX_DIR", "data/faiss_index"))
-# OPENAI_API_KEY env var set karna zaroori hai (LLM + embeddings ke liye)
+# The OPENAI_API_KEY env var must be set (needed for both the LLM and embeddings)
 
 
 def get_llm():
@@ -72,7 +72,7 @@ class ResearchReport(BaseModel):
 
 # %% OCR
 def ocr_document(path: str) -> str:
-    """Annual report / broker note PDF (text-layer ya scanned) aur images dono handle karta hai."""
+    """Handles both an annual report / broker note PDF (text-layer or scanned) and plain images."""
     p = Path(path)
     ext = p.suffix.lower()
     if ext == ".pdf":
@@ -122,15 +122,15 @@ def extract_financial_metrics(text: str) -> FinancialMetrics:
     return llm.invoke(EXTRACT_PROMPT.format(text=text[:12000]))
 
 
-# %% Deterministic signal engines (LLM se nahi — numbers/trend code se check hote hain)
+# %% Deterministic signal engines (not the LLM — numbers/trend are checked in code)
 def classify_fundamentals(m: FinancialMetrics) -> tuple[FundamentalView, List[Flag]]:
-    """Payers / Growers / Stragglers framework — pure arithmetic, LLM yahan involved nahi."""
+    """Payers / Growers / Stragglers framework — pure arithmetic, the LLM is not involved here."""
     flags: List[Flag] = []
 
     if m.revenue_cr is None and m.net_profit_cr is None:
         flags.append(Flag(code="FUNDAMENTALS_DATA_INCOMPLETE", severity="error",
-                          message="Revenue aur net profit dono extract nahi hue — extraction/OCR quality check karo.",
-                          note="Source PDF ka text layer ya scan quality verify karo."))
+                          message="Neither revenue nor net profit were extracted — check the extraction/OCR quality.",
+                          note="Verify the source PDF's text layer or scan quality."))
         return FundamentalView(classification="Unclassified", stance="Neutral",
                                rationale="Insufficient data to classify."), flags
 
@@ -145,11 +145,11 @@ def classify_fundamentals(m: FinancialMetrics) -> tuple[FundamentalView, List[Fl
     if m.debt_to_equity is not None and m.debt_to_equity > 1.5:
         flags.append(Flag(code="HIGH_LEVERAGE", severity="warning",
                           message=f"Debt-to-equity {m.debt_to_equity} is above the 1.5x comfort zone.",
-                          note="Interest-rate sensitivity badh jaati hai; rate-cycle ke saath cross-check karo."))
+                          note="Interest-rate sensitivity goes up — cross-check against the rate cycle."))
     if m.net_profit_growth_yoy_pct is not None and m.net_profit_growth_yoy_pct < 0:
         flags.append(Flag(code="PROFIT_DECLINE", severity="warning",
                           message=f"Net profit YoY down {m.net_profit_growth_yoy_pct}% despite revenue trend.",
-                          note="Margin compression ya one-off expense check karo concall notes mein."))
+                          note="Check the concall notes for margin compression or a one-off expense."))
     if m.operating_margin_pct is not None and m.operating_margin_pct < 10:
         flags.append(Flag(code="LOW_MARGIN", severity="warning",
                           message=f"Operating margin {m.operating_margin_pct}% is thin for a comfortable safety buffer."))
@@ -233,7 +233,7 @@ def build_index(docs_dir: Path = DOCS_DIR, index_dir: Path = INDEX_DIR):
         elif f.suffix.lower() in {".txt", ".md"}:
             docs += TextLoader(str(f), encoding="utf-8").load()
     if not docs:
-        raise RuntimeError(f"{docs_dir} khaali hai — macro notes/sector reports/concall transcripts yahan daalo.")
+        raise RuntimeError(f"{docs_dir} is empty — add macro notes/sector reports/concall transcripts there.")
     chunks = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=150).split_documents(docs)
     vs = FAISS.from_documents(chunks, OpenAIEmbeddings(model=EMBED_MODEL))
     vs.save_local(str(index_dir))
@@ -425,7 +425,7 @@ def analyze_stock(file_path: Optional[str], macro_text: str, concall_text: str,
 
 
 def analyze_batch(requests: List[dict]) -> List[dict]:
-    """Ek watchlist ke saare tickers ek saath (daily batch run)."""
+    """All tickers in a watchlist at once (for a daily batch run)."""
     out = []
     for r in requests:
         out.append(analyze_stock(r.get("file_path"), r.get("macro_text", ""), r.get("concall_text", ""),
